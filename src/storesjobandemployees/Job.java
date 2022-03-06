@@ -13,12 +13,13 @@ import java.io.Serializable;
  */
 public class Job implements Serializable {
 
-    private double salary;
     private String nameOfJob;
+    private double salary;
+    
 
-    public Job(double salary, String nameOfJob) {
-        this.salary = salary;
+    public Job(String nameOfJob, double salary ) {
         this.nameOfJob = nameOfJob;
+        this.salary = salary;
     }
 
     /*

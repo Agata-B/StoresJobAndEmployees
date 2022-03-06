@@ -5,17 +5,48 @@
  */
 package storesjobandemployees;
 
+import java.io.*;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Agata
  */
 public class AddNewJob extends javax.swing.JFrame {
 
+    ArrayList<Job> jobs;
+
     /**
      * Creates new form AddNewJob
      */
     public AddNewJob() {
         initComponents();
+        jobs = new ArrayList<Job>();
+        populateArrayList();
+    }
+
+    public void populateArrayList() {
+        try {
+            FileInputStream file = new FileInputStream("Jobs.dat");
+            ObjectInputStream inputFile = new ObjectInputStream(file);
+
+            boolean endOfFile = false;
+
+            while (!endOfFile) {
+                try {
+                    jobs.add((Job) inputFile.readObject());
+                } catch (IOException c) {
+                    endOfFile = true;
+
+                } catch (Exception d) {
+                    JOptionPane.showMessageDialog(null, d.getMessage());
+                }
+                inputFile.close();
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
 
     /**
@@ -29,12 +60,13 @@ public class AddNewJob extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jobName = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        jobSalary = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Create a New Job");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setText("Create a new Job by entering the data below: ");
@@ -42,9 +74,9 @@ public class AddNewJob extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel2.setText("Name of the job:");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        jobName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                jobNameActionPerformed(evt);
             }
         });
 
@@ -53,6 +85,11 @@ public class AddNewJob extends javax.swing.JFrame {
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/storesjobandemployees/save.png"))); // NOI18N
         jButton1.setText("Save");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -69,13 +106,13 @@ public class AddNewJob extends javax.swing.JFrame {
                                 .addGap(9, 9, 9)
                                 .addComponent(jLabel2)
                                 .addGap(18, 18, 18)
-                                .addComponent(jTextField1))
+                                .addComponent(jobName))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(jButton1)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel3)
                                     .addGap(18, 18, 18)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(jobSalary, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap(54, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -85,11 +122,11 @@ public class AddNewJob extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jobName, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2)
+                    .addComponent(jobSalary)
                     .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
@@ -99,9 +136,22 @@ public class AddNewJob extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void jobNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jobNameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_jobNameActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        if (jobName.getText().isEmpty() || jobSalary.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter all fields !");
+        } else {
+            String name = jobName.getText().trim();
+            String salary = jobSalary.getText().trim();
+            
+            Job job = new Job(name, Double.parseDouble(salary));
+            jobs.add(job);
+    }//GEN-LAST:event_jButton1ActionPerformed
+    }
 
     /**
      * @param args the command line arguments
@@ -143,7 +193,7 @@ public class AddNewJob extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jobName;
+    private javax.swing.JTextField jobSalary;
     // End of variables declaration//GEN-END:variables
 }
